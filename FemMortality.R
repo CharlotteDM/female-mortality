@@ -26,11 +26,13 @@ install.packages("rnaturalearthdata")
 library("rnaturatlearthdata")
 library("rgeos")
 library("RColorBrewer")
-
+library("rstudioapi")
 install.packages("conflicted")
+
+path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 #Data source: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS 
 
-mortality_fem <- read.csv("/Users/kdm/programowanie w R/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv", 
+mortality_fem <- read.csv(paste(path,"data/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv", sep = "/"), 
                           stringsAsFactors = F)
 head(mortality_fem)
 str(mortality_fem)
