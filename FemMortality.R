@@ -1,0 +1,353 @@
+library("ggplot2")
+library("tidyverse")
+library("forcats")
+library("plotly")?
+  library("rworldmap")?
+  library("rworldxtra")?
+  library("ggmap")?
+  library("grid")?
+  library("gridExtra")?
+  library("sp")
+
+install.packages("eurostat")?
+  library("eurostat")?
+  library("leaflet")?
+  library("sf")
+library("scales")
+library("cowplot")
+library("ggthemes")
+library("raster")?
+  install.packages("spDataLarge")??
+  library("spDataLarge")?
+  library("tmap")
+library("tmaptools")
+library("rnaturalearth")
+install.packages("rnaturalearthdata")
+library("rnaturatlearthdata")
+library("rgeos")
+library("RColorBrewer")
+
+install.packages("conflicted")
+#Data source: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS 
+
+mortality_fem <- read.csv("/Users/kdm/programowanie w R/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv", 
+                          stringsAsFactors = F)
+head(mortality_fem)
+str(mortality_fem)
+
+#mortality in 2019
+mort2019 <- select(mortality_fem, Country.Name, Country.Code, X2019) 
+
+
+#finding country with the highest mortality rate in 2019
+max(mort2019$X2019, na.rm = TRUE) 
+#---max(mort2019$X2019)
+the_highest_MR2019 <- filter(mort2019, X2019 == max(X2019, na.rm = TRUE)) #Kiribati - 43.7
+
+#finding country with the lowest mortality rate in 2019
+min(mort2019$X2019, na.rm = TRUE)
+the_lowest_MR2019 <- filter(mort2019, X2019 == min(X2019, na.rm = TRUE)) #Korea Płd - 4.4
+
+
+#mortality in 2000
+mort2000 <- select(mortality_fem, Country.Name, Country.Code, X2000)
+
+
+
+#finding country with the highest mortality rate in 2000
+max(mort2000$X2000, na.rm = TRUE)
+the_highest_MR2000 <- filter(mort2000, X2000 == max(X2000, na.rm = TRUE)) #Kiribati - 47.8
+
+#finding country with the lowest mortality rate in 2000
+min(mort2000$X2000, na.rm = TRUE)
+the_lowest_MR2000 <- filter(mort2000, X2000 == min(X2000, na.rm = TRUE)) #Japan 7.5
+
+
+#select data from 2000 to 2019
+mortality_fem_2000_2019 <- select(
+  mortality_fem, Country.Name, Country.Code, X2000:X2019)
+
+
+
+#filter data from UE
+
+EU <- filter (mortality_fem_2000_2019, Country.Code == "POL" | Country.Code == "AUT" |
+                Country.Code == "BEL" | Country.Code == "BGR" | Country.Code == "HRV" |
+                Country.Code == "CYP" |
+                Country.Code == "CZE" | Country.Code == "DNK" | Country.Code == "EST" |
+                Country.Code == "FIN" | Country.Code == "FRA" | Country.Code == "GRC" |
+                Country.Code == "ESP" | Country.Code == "NLD" | Country.Code == "IRL" |
+                Country.Code == "LTU" | Country.Code == "LUX" | Country.Code == "LVA" |
+                Country.Code == "MLT" | Country.Code == "DEU" | Country.Code == "PRT" |
+                Country.Code == "ROU" | Country.Code == "SVK" | Country.Code == "SVN" |
+                Country.Code == "SWE" | Country.Code == "HUN" | 
+                Country.Code == "ITA")
+
+#finding EU country with the highest mortality rate in 2019
+max(EU$X2019, na.rm = TRUE) 
+
+EUthe_highest_MR2019 <- filter(EU, X2019 == max(X2019, na.rm = TRUE)) #Bulgarria = 16.4
+
+#finding EU country with the lowest mortality rate in 2019
+min(EU$X2019, na.rm = TRUE)
+EUthe_lowest_MR2019 <- filter(EU, X2019 == min(X2019, na.rm = TRUE)) #Cyprus - 5.7
+
+
+#ggplot - column - Mortality in UE in 2019 (first attempt)
+ggplot(data = EU) +
+  geom_col(mapping = aes(x = Country.Code, y = X2019, fill = Country.Code, binwidth =  .5)) +
+  coord_flip() +
+  theme_light() +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    x = "UE Country",
+    y = "Mortality, fem (%)",
+    fill = "Country") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold")
+  )
+
+#second attempt
+ggplot(data = EU) + geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
+  scale_fill_gradient(low="blue", high="red") +
+  coord_flip() +
+  theme_light() +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in UE",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    x = "UE Country",
+    y = "Mortality, fem (%)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+    legend.position = "none") 
+
+#mortality fem 2019 = whole world
+gg_world <- ggplot(data = mortality_fem_2000_2019) + geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
+  scale_fill_gradient(low="blue", high="red") +
+  coord_flip() +
+  theme_light() +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in UE",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    x = "UE Country",
+    y = "Mortality, fem (%)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+    legend.position = "none") 
+
+ggplotly(gg_world)
+
+#plotly
+gg <- ggplot(data = EU) + geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
+  scale_fill_gradient(low="blue", high="red") +
+  coord_flip() +
+  theme_light() +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in UE",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    x = "UE Country",
+    y = "Mortality, fem (%)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+    legend.position = "none") 
+
+ggplotly(gg)
+
+
+
+#kartogram
+
+#Europe plot
+world <- ne_countries(scale = "medium", returnclass = "sf")
+Europe <- world[which(world$continent == "Europe"),]
+ggplot(Europe) +
+  geom_sf() +
+  coord_sf(xlim = c(-25,45), ylim = c(35,72), expand = FALSE)
+
+
+#combined_data EU
+combined_data <- left_join(EU, Europe, by = c("Country.Code" = "brk_a3"))
+#add data GDP 2019
+#data source: https://ec.europa.eu/eurostat/statistics-explained/index.php?title=File:Current_healthcare_expenditure,_2019.png
+CHE_mill_eu <- c(41483, 50759, 4364, 1562, 17546, 403444, 31137, 
+                 113674, 1892, 21992, 269541, 14376, 3785, 9277, 23782, 155249,
+                 3420, 3411, 2001, 1110, 82365, 34400, 20392, 12810, 6534, 4125, 51824)
+GDP_perc <- c(10.4, 10.7, 7.1, 7, 7.8, 11.7, 10, 9.1, 6.7, 9.2, 11.1, 7.8, 7,
+              6.4, 6.7, 8.7, 7, 5.4, 6.6, 9, 10.2, 6.5, 9.5, 5.7, 7, 8.5, 10.9)
+
+combined_data <- cbind(combined_data, CHE_mill_eu, GDP_perc)
+
+
+#Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in EU
+ggplot(combined_data) +
+  geom_sf(aes(geometry = geometry, fill=X2019)) +
+  coord_sf(xlim = c(-15,35), ylim = c(35,72), expand = FALSE) +
+  scale_fill_gradient(low = "blue", high = "red") +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in EU",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    fill = "Mortality (%)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    plot.subtitle = element_text(color="slateblue", size=12, face="italic"))
+
+
+#scatterplott mortality and GDP(%)
+
+ggGDP <- ggplot(data = combined_data) +
+  geom_point(mapping = aes(x = X2019, y = GDP_perc, color = Country.Name)) +
+  theme_light() +
+  labs(
+    title = "Mortality in 2019 (%) in EU and Current Healthcare Expenditure (% of GDP)",
+    subtitle = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS
+    https://ec.europa.eu/eurostat/statistics-explained/index.php?title=File:Current_healthcare_expenditure,_2019.png)",
+    x = "Mortality, fem (%), 2019",
+    y = "Current Healthcare Expenditure (% of GDP)", 
+    col = "EU Country") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=12, face="bold"),
+    plot.subtitle = element_text(color="slateblue", size=8, face="italic"))
+
+#interactive mortality and GDP(%)
+ggplotly(ggGDP)
+
+
+#how to add subtitle and caption to ggplotly
+ggplotly(ggGDP) %>%
+  layout(title = list(text = paste0("Mortality in 2019 (%) in EU and Current Healthcare Expenditure (% of GDP)",
+                                    '<br>',
+                                    '<sup>',
+                                    "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70",
+                                    '<br>',
+                                    '<sub>',
+                                    
+                                    "<i>(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE. ; < br /> https://ec.europa.eu/eurostat/statistics-explained/index.php?title=File:Current_healthcare_expenditure,_2019.png)</i>")))
+ggplotly(ggGDP) %>%
+  labs()
+
+
+#correlation between mortality and GDP_perc
+cor(combined_data$X2019, combined_data$GDP_perc)
+
+
+#add data physicians2018
+#data source: https://www.oecd-ilibrary.org/sites/1d767767-en/index.html?itemId=/content/component/1d767767-en
+######"Note: The EU average is unweighted. 1. Data refer to all doctors licensed to practice, resulting in a large over-estimation of the number of practising doctors (e.g. of around 30% in Portugal). 2. Data include not only doctors providing direct care to patients, but also those working in the health sector as managers, educators, researchers, etc. (adding another 5-10% of doctors).
+physicians2018 <- c(5.2, 3.1, 4.2, 4.1, 4, 4.3, 4.2, 4, 3.5, 3.2, 3.2, 
+                    6.1, 3.4, 3.4, 3.3, 4, 4.6, 3, 3.3, 4, 3.7, 
+                    2.4, 5.2, 3.1, 3.5, 3.2, 4.3) #physicians/1000 pacients
+
+combined_data <- cbind(combined_data, physicians2018)
+
+#data source: https://data.worldbank.org/indicator/SE.PRM.ENRR (2019)
+school_enrollEU <- read.csv ("/Users/kdm/programowanie w R/School enrollment, primary (% gross).csv")
+combined_data <- left_join(combined_data, school_enrollEU, by = c("Country.Code" = "Country.Code"))
+
+####People at risk of poverty or social exclusion in 2019 (%)
+#data source: https://ec.europa.eu/eurostat/databrowser/view/t2020_50/default/table?lang=en
+risk_poverty <- c(16.9, 19.5, 32.8, 22.3, 12.5, 17.4, 16.3, 25.3, 24.3, 
+                  15.6, 17.9, 30, 23.3, 18.9, 20.6, 25.6, 26.3, 20.6, 27.3, 
+                  20.1, 16.5, 18.2, 21.6, 31.2, 16.4, 14.4, 18.8)
+combined_data <- cbind(combined_data, risk_poverty)
+
+
+#max and min risk of poverty or social exclusion in EU
+min(combined_data$risk_poverty)
+min_risk_pov <- filter(combined_data, risk_poverty == min(risk_poverty))
+max(combined_data$risk_poverty)
+max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty))
+
+#Removing columns from data frame
+#combined_data <- combined_data[, -c(90:92)]
+#combined_data <- combined_data[, - c(101:103)] #
+#combined_data <- combined_data[, -89] #
+
+#Renaming columns in data frame
+
+
+names(combined_data)[names(combined_data) == "X1990..YR1990."] <- "educ1990"
+names(combined_data)[names(combined_data) == "X2000..YR2000."] <- "educ2000"
+names(combined_data)[names(combined_data) == "X2011..YR2011."] <- "educ2011"
+names(combined_data)[names(combined_data) == "X2012..YR2012."] <- "educ2012"
+names(combined_data)[names(combined_data) == "X2013..YR2013."] <- "educ2013"
+names(combined_data)[names(combined_data) == "X2014..YR2014."] <- "educ2014"
+names(combined_data)[names(combined_data) == "X2015..YR2015."] <- "educ2015"
+names(combined_data)[names(combined_data) == "X2016..YR2016."] <- "educ2016"
+names(combined_data)[names(combined_data) == "X2017..YR2017."] <- "educ2017"
+names(combined_data)[names(combined_data) == "X2018..YR2018."] <- "educ2018"
+names(combined_data)[names(combined_data) == "X2019..YR2019."] <- "educ2019"
+
+
+#scatterplott mortality and number of physicians
+ggPHYS <- ggplot(data = combined_data) +
+  geom_point(mapping = aes(x = X2019, y = physicians2018, color = Country.Name)) +
+  theme_light() +
+  labs(
+    title = "Mortality in 2019 (%) in EU and Practising Physicians (per 1 000 population)",
+    subtitle = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS
+    https://www.oecd-ilibrary.org/sites/1d767767-en/index.html?itemId=/content/component/1d767767-en",
+    x = "Mortality, fem (%), 2019",
+    y = "Practising Physicians", 
+    col = "EU Country") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
+    plot.caption = element_text(color="deeppink", size=7),
+    axis.title.x = element_text(color="darkmagenta", size=10),
+    axis.title.y = element_text(color="darkmagenta", size=10)
+  )
+
+#correlation between mortality and number of physicians
+cor(combined_data$X2019, combined_data$physicians2018)
+
+
+
+#risk poverty and mortality
+ggRP <- ggplot(data = combined_data) +
+  geom_point(mapping = aes(x = X2019, y = risk_poverty, color = Country.Name)) +
+  theme_light() +
+  labs(
+    title = "Mortality (%) & Risk of Poverty or Social Exclusion in EU in 2019",
+    subtitle = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70 & risk poverty",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS
+    https://ec.europa.eu/eurostat/databrowser/view/t2020_50/default/table?lang=en",
+    x = "Mortality, fem (%), 2019",
+    y = "Risk of Poverty or Social Exclusion", 
+    col = "EU Country") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
+    plot.caption = element_text(color="deeppink", size=7),
+    axis.title.x = element_text(color="darkmagenta", size=10),
+    axis.title.y = element_text(color="darkmagenta", size=10)
+  )
+
+ggplotly(ggRP)
+
+
+#correlation between mortality and risk poverty
+cor(combined_data$X2019, combined_data$risk_poverty)
+
+
+
+
+
+
+
+
