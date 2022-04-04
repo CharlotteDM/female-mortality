@@ -136,10 +136,10 @@ gg_world <- ggplot(data = mortality_fem_2000_2019) + geom_col(aes(x = reorder(Co
   coord_flip() +
   theme_light() +
   labs(
-    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in UE",
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
     subtitle = "Females, ages between 30 and 70",
     caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
-    x = "UE Country",
+    x = "Country",
     y = "Mortality, fem (%)") +
   theme(
     plot.title = element_text(color="royalblue4", size=14, face="bold"),
@@ -257,8 +257,8 @@ physicians2018 <- c(5.2, 3.1, 4.2, 4.1, 4, 4.3, 4.2, 4, 3.5, 3.2, 3.2,
 combined_data <- cbind(combined_data, physicians2018)
 
 #data source: https://data.worldbank.org/indicator/SE.PRM.ENRR (2019)
-school_enrollEU <- read.csv ("/Users/kdm/programowanie w R/School enrollment, primary (% gross).csv")
-combined_data <- left_join(combined_data, school_enrollEU, by = c("Country.Code" = "Country.Code"))
+#school_enrollEU <- read.csv ("/Users/kdm/programowanie w R/School enrollment, primary (% gross).csv")
+#combined_data <- left_join(combined_data, school_enrollEU, by = c("Country.Code" = "Country.Code"))
 
 ####People at risk of poverty or social exclusion in 2019 (%)
 #data source: https://ec.europa.eu/eurostat/databrowser/view/t2020_50/default/table?lang=en
@@ -281,7 +281,7 @@ max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty))
 
 #Renaming columns in data frame
 
-
+#remove this!!!
 names(combined_data)[names(combined_data) == "X1990..YR1990."] <- "educ1990"
 names(combined_data)[names(combined_data) == "X2000..YR2000."] <- "educ2000"
 names(combined_data)[names(combined_data) == "X2011..YR2011."] <- "educ2011"
@@ -294,10 +294,32 @@ names(combined_data)[names(combined_data) == "X2017..YR2017."] <- "educ2017"
 names(combined_data)[names(combined_data) == "X2018..YR2018."] <- "educ2018"
 names(combined_data)[names(combined_data) == "X2019..YR2019."] <- "educ2019"
 
+#the biggest mortality & and the biggest GDP_perc
+big_mortality <- combined_data %>%
+  group_by(Country.Name) %>%
+  filter(X2019 > 12)
+big_GDP <- combined_data %>%
+  group_by(Country.Name) %>%
+  filter(GDP_perc > 10) 
+
+#simple scatterplots with labels - the biggest mortality & and the biggest GDP_perc
+ggplot(big_mortality, aes(X2019, physicians2018, label = Country.Name)) +
+  geom_text_repel() +
+  geom_point(color = 'purple') +
+  theme_light()
+ggplot(big_GDP, aes(X2019, physicians2018, label = Country.Name)) +
+  geom_text_repel() +
+  geom_point(color = 'yellow') +
+  theme_light()
 
 #scatterplott mortality and number of physicians
 ggPHYS <- ggplot(data = combined_data) +
-  geom_point(mapping = aes(x = X2019, y = physicians2018, color = Country.Name)) +
+  geom_point(mapping = aes(x = X2019, y = physicians2018, 
+                           color = Country.Name, size = GDP_perc)) +
+  geom_label_repel(
+    aes(x = X2019, y = physicians2018, label = Country.Name, size = 6), 
+    data = combined_data
+  )
   theme_light() +
   labs(
     title = "Mortality in 2019 (%) in EU and Practising Physicians (per 1 000 population)",
@@ -313,12 +335,14 @@ ggPHYS <- ggplot(data = combined_data) +
     plot.caption = element_text(color="deeppink", size=7),
     axis.title.x = element_text(color="darkmagenta", size=10),
     axis.title.y = element_text(color="darkmagenta", size=10)
-  )
+  ) +
+  geom_smooth(mapping = aes(x = X2019, y = physicians2018)) 
 
 #correlation between mortality and number of physicians
 cor(combined_data$X2019, combined_data$physicians2018)
 
-
+#correlation between mortality and GDP (%)
+cor(combined_data$X2019, combined_data$GDP_perc)
 
 #risk poverty and mortality
 ggRP <- ggplot(data = combined_data) +
@@ -347,9 +371,35 @@ ggplotly(ggRP)
 cor(combined_data$X2019, combined_data$risk_poverty)
 
 
+geom_text_repel(aes (x = X2019, y = physicians2018, label = Country.Name,
+                     size = 3, color = "black")) +
 
 
+  
+  
 
-
-
+  ggplot(data = combined_data, aes(x = X2019, y = physicians2018, 
+                                   color = Country.Name, size = GDP_perc)) +
+  geom_point(aes(color = Country.Name)) +
+  geom_point(size = 2, data = big_mortality) +
+  ggrepel::geom_label_repel(
+    aes(label = Country.Name), 
+    data = big_mortality
+  )
+  theme_light() +
+  labs(
+    title = "Mortality in 2019 (%) in EU and Practising Physicians (per 1 000 population)",
+    subtitle = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS
+    https://www.oecd-ilibrary.org/sites/1d767767-en/index.html?itemId=/content/component/1d767767-en",
+    x = "Mortality, fem (%), 2019",
+    y = "Practising Physicians", 
+    col = "EU Country") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
+    plot.caption = element_text(color="deeppink", size=7),
+    axis.title.x = element_text(color="darkmagenta", size=10),
+    axis.title.y = element_text(color="darkmagenta", size=10)
+  ) 
 
