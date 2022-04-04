@@ -243,7 +243,7 @@ ggplotly(ggGDP) %>%
   labs()
 
 
-#correlation between mortality and GDP_perc
+#correlation between mortality and Current Healthcare Expenditure (% of GDP)
 cor(combined_data$X2019, combined_data$GDP_perc)
 
 
@@ -277,7 +277,7 @@ max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty))
 
 #Renaming columns in data frame
 
-#the biggest mortality & and the biggest GDP_perc
+#the biggest mortality & and the biggest Current Healthcare Expenditure (% of GDP)
 big_mortality <- combined_data %>%
   group_by(Country.Name) %>%
   filter(X2019 > 12)
@@ -285,7 +285,7 @@ big_GDP <- combined_data %>%
   group_by(Country.Name) %>%
   filter(GDP_perc > 10) 
 
-#simple scatterplots with labels - the biggest mortality & and the biggest GDP_perc
+#simple scatterplots with labels - the biggest mortality & and the biggest Current Healthcare Expenditure (% of GDP)
 ggplot(big_mortality, aes(X2019, physicians2018, label = Country.Name)) +
   geom_text_repel() +
   geom_point(color = 'purple') +
