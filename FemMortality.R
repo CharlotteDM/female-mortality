@@ -74,7 +74,6 @@ head(mortality_fem_2000_2019)
 str(mortality_fem_2000_2019)
 
 #ggplot: "Mortality fem 2019 - world"
-
 gg_world <- ggplot(data = mortality_fem_2000_2019) + 
   geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
   scale_fill_gradient(low="blue", high="red") +
@@ -97,7 +96,21 @@ cont <- ggplot(data = mortality_fem_2000_2019) +
   geom_point(mapping = aes(x = Country.Name, y = X2019), color = "blue") +
   facet_wrap(~ continent,nrow = 1, scales = "free_x") +
   theme(axis.ticks.x = element_blank(),
-        axis.text.x = element_blank())
+        axis.text.x = element_blank()) +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in Europe",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+    x = "Country",
+    y = "Mortality, fem (%)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold"))
+
+#interactive: "Mortality (fem) in 2019 in whole world"
+ggplotly(gg_world)
+ggplotly(cont)
 
 #ggplot: "Mortality(fem) in Europe Countries"
 mortalityInEurope <- mortality_fem_2000_2019%>%
@@ -120,10 +133,20 @@ ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fi
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
     legend.position = "right")  
 
-#interactive: "Mortality (fem) in 2019 in whole world"
-ggplotly(gg_world)
-ggplotly(cont)
-
+#boxplot - comparison of mortality across continents
+  ggplot (data = mortality_fem_2000_2019, (aes(continent,X2019, fill=continent))) +
+  geom_boxplot() +
+    labs(
+      title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
+      subtitle = "Females, ages between 30 and 70",
+      caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
+      x = "Continent",
+      y = "Mortality, fem (%)") +
+    theme(
+      plot.title = element_text(color="royalblue4", size=14, face="bold"),
+      axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+      axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+      legend.position = "none")
 
 #preapring map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
 world <- ne_countries(scale = "medium", returnclass = "sf")
