@@ -92,6 +92,8 @@ gg_world <- ggplot(data = mortality_fem_2000_2019) +
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
     legend.position = "none") 
 
+gg_world
+
 cont <- ggplot(data = mortality_fem_2000_2019) +
   geom_point(mapping = aes(x = Country.Name, y = X2019), color = "blue") +
   facet_wrap(~ continent,nrow = 1, scales = "free_x") +
@@ -107,6 +109,8 @@ cont <- ggplot(data = mortality_fem_2000_2019) +
     plot.title = element_text(color="royalblue4", size=14, face="bold"),
     axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"))
+
+cont
 
 #interactive: "Mortality (fem) in 2019 in whole world"
 ggplotly(gg_world)
@@ -345,15 +349,14 @@ big_GDP <- combined_data %>%
   group_by(Country.Name) %>%
   filter(GDP_perc > 10) 
 
-#simple scatterplots with labels: "The Biggest Mortality (fem) & The Biggest Current Healthcare Expenditure (% of GDP) in EU"
-ggplot(big_mortality, aes(X2019, physicians2018, label = Country.Name)) +
-  geom_text_repel() +
-  geom_point(color = 'purple') +
-  theme_light()
-ggplot(big_GDP, aes(X2019, physicians2018, label = Country.Name)) +
-  geom_text_repel() +
-  geom_point(color = 'yellow') +
-  theme_light()
+#simple plots with labels: "The Biggest Mortality (fem) & The Biggest Current Healthcare Expenditure (% of GDP) in EU"
+ggplot(data = big_mortality) +
+  geom_text_repel(mapping = aes(x = Country.Name, y = X2019, 
+                           color = Country.Name, label = Country.Code))
+
+ggplot(data = big_GDP) +
+  geom_text_repel(mapping = aes(x = Country.Name, y = X2019, 
+                                color = Country.Name, label = Country.Code))
 
 #ggplot with labels: "Mortality (fem) and Number of Physicians in EU" 
 ggPHYS <- ggplot(data = combined_data) +
