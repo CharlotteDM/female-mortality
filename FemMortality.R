@@ -134,8 +134,9 @@ ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fi
     legend.position = "right")  
 
 #boxplot - comparison of mortality across continents
-  ggplot (data = mortality_fem_2000_2019, (aes(continent,X2019, fill=continent))) +
+  ggplot (data = mortality_fem_2000_2019, (aes(continent,X2019, color=continent))) +
   geom_boxplot() +
+    geom_jitter(width=0.15, alpha=0.3) +
     labs(
       title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
       subtitle = "Females, ages between 30 and 70",
@@ -212,10 +213,10 @@ gg <- ggplot(data = EU) + geom_col(aes(x = reorder(Country.Name, X2019), y = X20
   coord_flip() +
   theme_light() +
   labs(
-    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in UE",
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) in EU",
     subtitle = "Females, ages between 30 and 70",
     caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
-    x = "UE Country",
+    x = "EU Country",
     y = "Mortality, fem (%)") +
   theme(
     plot.title = element_text(color="royalblue4", size=14, face="bold"),
@@ -361,7 +362,7 @@ ggPHYS <- ggplot(data = combined_data) +
   geom_label_repel(
     aes(x = X2019, y = physicians2018, label = Country.Name, size = 6), 
     data = combined_data
-  )
+  ) +
   theme_light() +
   labs(
     title = "Mortality in 2019 (%) in EU and Practising Physicians (per 1 000 population)",
