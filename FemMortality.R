@@ -34,13 +34,13 @@ install.packages("gapminder")
 path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 #Data source: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS 
 
-mortality_fem <- read.csv(paste(path,"data/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv", sep = "/"), 
+mortality_fem <- read.csv("/Users/kdm/programowanie w R/FemaleMortality_project/data/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv",  
                           stringsAsFactors = F)
 head(mortality_fem)
 str(mortality_fem)
 
 #mortality in 2019
-mort2019 <- select(mortality_fem, Country.Name, Country.Code, X2019) 
+mort2019 <- dplyr::select(mortality_fem, Country.Name, Country.Code, X2019) 
 
 #finding country with the highest mortality rate in 2019
 max(mort2019$X2019, na.rm = TRUE) 
@@ -64,7 +64,7 @@ the_lowest_MR2000 <- filter(mort2000, X2000 == min(X2000, na.rm = TRUE)) #Japan 
 
 
 #selects data from 2000 to 2019
-mortality_fem_2000_2019 <- select(
+mortality_fem_2000_2019 <- dplyr::select(
   mortality_fem, Country.Name, Country.Code, X2000:X2019)
 
 #adds column with names of continents
@@ -153,7 +153,7 @@ ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fi
       axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
       legend.position = "none")
 
-#preapring map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
+#prepars map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
 world <- ne_countries(scale = "medium", returnclass = "sf")
 combined_data_world <- left_join(mortality_fem_2000_2019, world, by = c("Country.Code" = "brk_a3"))
 
@@ -185,11 +185,11 @@ EU <- filter (mortality_fem_2000_2019, Country.Code == "POL" | Country.Code == "
                 Country.Code == "SWE" | Country.Code == "HUN" | 
                 Country.Code == "ITA")
 
-#finding EU country with the highest mortality rate in 2019
+#finds EU country with the highest mortality rate in 2019
 max(EU$X2019, na.rm = TRUE) 
 EUthe_highest_MR2019 <- filter(EU, X2019 == max(X2019, na.rm = TRUE)) #Bulgarria = 16.4
 
-#finding EU country with the lowest mortality rate in 2019
+#finds EU country with the lowest mortality rate in 2019
 min(EU$X2019, na.rm = TRUE)
 EUthe_lowest_MR2019 <- filter(EU, X2019 == min(X2019, na.rm = TRUE)) #Cyprus - 5.7
 
@@ -232,8 +232,6 @@ ggplotly(gg)
 
 
 
-#kartogram
-
 #Europe map
 world <- ne_countries(scale = "medium", returnclass = "sf")
 Europe <- world[which(world$continent == "Europe"),]
@@ -242,7 +240,7 @@ ggplot(Europe) +
   coord_sf(xlim = c(-25,45), ylim = c(35,72), expand = FALSE)
 
 
-#creating new data frame
+#creates new data frame
 combined_data <- left_join(EU, Europe, by = c("Country.Code" = "brk_a3"))
 
 #adding data: GDP 2019
@@ -253,7 +251,7 @@ CHE_mill_eu <- c(41483, 50759, 4364, 1562, 17546, 403444, 31137,
 GDP_perc <- c(10.4, 10.7, 7.1, 7, 7.8, 11.7, 10, 9.1, 6.7, 9.2, 11.1, 7.8, 7,
               6.4, 6.7, 8.7, 7, 5.4, 6.6, 9, 10.2, 6.5, 9.5, 5.7, 7, 8.5, 10.9)
 
-#combaining vector to data frame
+#combains vector to data frame
 combined_data <- cbind(combined_data, CHE_mill_eu, GDP_perc)
 
 
@@ -353,6 +351,7 @@ big_GDP <- combined_data %>%
 ggplot(data = big_mortality) +
   geom_text_repel(mapping = aes(x = Country.Name, y = X2019, 
                            color = Country.Name, label = Country.Code))
+
 
 ggplot(data = big_GDP) +
   geom_text_repel(mapping = aes(x = Country.Name, y = X2019, 
