@@ -8,8 +8,6 @@ library("ggmap")?
 library("grid")?
 library("gridExtra")?
 library("sp")
-
-install.packages("eurostat")?
 library("eurostat")?
 library("leaflet")?
 library("sf")
@@ -17,17 +15,15 @@ library("scales")
 library("cowplot")
 library("ggthemes")
 library("raster")?
-install.packages("spDataLarge")??
-library("spDataLarge")?
 library("tmap")
 library("tmaptools")
 library("rnaturalearth")
-install.packages("rnaturalearthdata")
+#install.packages("rnaturalearthdata")
 library("rnaturatlearthdata")
 library("rgeos")
 library("RColorBrewer")
 
-install.packages("conflicted")
+#install.packages("conflicted")
 #Data source: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS 
 
 mortality_fem <- read.csv("/Users/kdm/programowanie w R/mortality_cvd_cancer_diabetes_CRD_30_70_fem.csv", 
