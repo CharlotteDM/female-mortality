@@ -33,12 +33,19 @@ install.packages("gapminder")
 
 path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(path)
+
 #Data source: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS 
 
 mortality_fem <- read.csv("data/mortality_data.csv",  
-                          stringsAsFactors = F)
+                          stringsAsFactors = F, skip = 4)
 head(mortality_fem)
 str(mortality_fem)
+
+
+#Data source: https://gist.github.com/stevewithington/20a69c0b6d2ff846ea5d35e5fc47f26c#file-country-and-continent-codes-list-csv-csv
+
+continent_codes <- read.csv("data/continent_codes.csv",  
+                          stringsAsFactors = F)
 
 #mortality in 2019
 mort2019 <- dplyr::select(mortality_fem, Country.Name, Country.Code, X2019) 
@@ -69,7 +76,7 @@ mortality_fem_2000_2019 <- dplyr::select(
   mortality_fem, Country.Name, Country.Code, X2000:X2019)
 
 #adds column with names of continents
-mortality_fem_2000_2019 <- left_join(mortality_fem_2000_2019, countries_world, by = "Country.Code")
+mortality_fem_2000_2019 <- left_join(mortality_fem_2000_2019, , by = "Country.Code")
 
 head(mortality_fem_2000_2019)
 str(mortality_fem_2000_2019)
