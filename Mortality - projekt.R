@@ -47,6 +47,8 @@ str(mortality_fem)
 continent_codes <- read.csv("data/continent_codes.csv",  
                           stringsAsFactors = F)
 
+names(continent_codes)[5] <- "Country.Code"
+
 #mortality in 2019
 mort2019 <- dplyr::select(mortality_fem, Country.Name, Country.Code, X2019) 
 
@@ -76,7 +78,7 @@ mortality_fem_2000_2019 <- dplyr::select(
   mortality_fem, Country.Name, Country.Code, X2000:X2019)
 
 #adds column with names of continents
-mortality_fem_2000_2019 <- left_join(mortality_fem_2000_2019, , by = "Country.Code")
+mortality_fem_2000_2019 <- left_join(mortality_fem_2000_2019, continent_codes, by = "Country.Code")
 
 head(mortality_fem_2000_2019)
 str(mortality_fem_2000_2019)
