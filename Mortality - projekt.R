@@ -27,9 +27,8 @@ library("rnaturatlearthdata")
 library(rgeos)
 library(RColorBrewer)
 library(rstudioapi)
-install.packages("conflicted")
-install.packages("gganimate")
-install.packages("gapminder")
+library(ggdensity)
+library("gganimate")
 
 path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(path)
@@ -88,7 +87,7 @@ gg_world <- ggplot(data = mortality_fem_2000_2019) +
   geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
   scale_fill_gradient(low="blue", high="red") +
   coord_flip() +
-  facet_wrap(~ continent) +
+  facet_wrap(~ Continent_Name) +
   theme_light() +
   labs(
     title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
@@ -106,7 +105,7 @@ gg_world
 
 cont <- ggplot(data = mortality_fem_2000_2019) +
   geom_point(mapping = aes(x = Country.Name, y = X2019), color = "blue") +
-  facet_wrap(~ continent,nrow = 1, scales = "free_x") +
+  facet_wrap(~ Continent_Name,nrow = 1, scales = "free_x") +
   theme(axis.ticks.x = element_blank(),
         axis.text.x = element_blank()) +
   labs(
@@ -128,9 +127,9 @@ ggplotly(cont)
 
 #ggplot: "Mortality(fem) in Europe Countries"
 mortalityInEurope <- mortality_fem_2000_2019%>%
-  filter(continent %in% c("Europe"))
+  filter(Continent_Name %in% c("Europe"))
 
-ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fill=X2019)) + 
+gg_EU_mortality_fem <- ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fill=X2019)) + 
   geom_tile() +
   scale_fill_gradient(low="blue", high="red") +
   theme_light() +
@@ -148,7 +147,7 @@ ggplot(data = mortalityInEurope, aes(y=reorder(Country.Name, X2019), x=X2019, fi
     legend.position = "right")  
 
 #boxplot - comparison of mortality across continents
-ggplot (data = mortality_fem_2000_2019, (aes(continent,X2019, color=continent))) +
+box_cont_mort_fem <- ggplot (data = mortality_fem_2000_2019, (aes(Continent_Name,X2019, color=Continent_Name))) +
   geom_boxplot() +
   geom_jitter(width=0.15, alpha=0.3) +
   labs(
