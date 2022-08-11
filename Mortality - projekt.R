@@ -2,25 +2,22 @@ library(ggplot2)
 library(tidyverse)
 library("forcats")
 library(plotly)
-library("rworldmap")?
-  library("rworldxtra")?
-  library("ggmap")?
-  library("grid")?
-  library("gridExtra")?
+library("rworldmap")
+  library("rworldxtra")
+  library("ggmap")
+  library("grid")
+  library("gridExtra")
   library(sp)
 library(gifski)
 
-install.packages("eurostat")?
-  library("eurostat")?
-  library("leaflet")?
+
+  library("leaflet")
   library(sf)
 library(scales)
 library(cowplot)
 library(ggthemes)
-library("raster")?
-  install.packages("spDataLarge")??
-  library("spDataLarge")?
-  library(tmap)
+library("raster")
+
 library(tmaptools)
 library(rnaturalearth)
 library("rnaturatlearthdata")
