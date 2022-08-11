@@ -162,12 +162,12 @@ box_cont_mort_fem <- ggplot (data = mortality_fem_2000_2019, (aes(Continent_Name
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
     legend.position = "none")
 
-#prepars map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
+#prepares map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
 world <- ne_countries(scale = "medium", returnclass = "sf")
 combined_data_world <- left_join(mortality_fem_2000_2019, world, by = c("Country.Code" = "brk_a3"))
 
 #map: "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
-ggplot(combined_data_world) +
+map_world_mort_fem <- ggplot(combined_data_world) +
   geom_sf(aes(geometry = geometry, fill=X2019)) +
   scale_fill_gradient(low = "blue", high = "red") +
   labs(
@@ -194,13 +194,16 @@ EU <- filter (mortality_fem_2000_2019, Country.Code == "POL" | Country.Code == "
                 Country.Code == "SWE" | Country.Code == "HUN" | 
                 Country.Code == "ITA")
 
+#removes duplicated row - Cyprus
+EU <- EU[-4, ]
+
 #finds EU country with the highest mortality rate in 2019
 max(EU$X2019, na.rm = TRUE) 
 EUthe_highest_MR2019 <- filter(EU, X2019 == max(X2019, na.rm = TRUE)) #Bulgarria = 16.4
 
 #finds EU country with the lowest mortality rate in 2019
 min(EU$X2019, na.rm = TRUE)
-EUthe_lowest_MR2019 <- filter(EU, X2019 == min(X2019, na.rm = TRUE)) #Cyprus - 5.7
+EUthe_lowest_MR2019 <- filter(EU, X2019 == min(X2019, na.rm = TRUE)) #Cyprus - 8.2
 
 #ggplot: "Mortality in UE in 2019, fem" (first attempt)
 ggplot(data = EU) +
@@ -293,7 +296,7 @@ ggGDP <- ggplot(data = combined_data) +
     col = "EU Country") +
   theme(
     plot.title = element_text(color="royalblue4", size=12, face="bold"),
-    plot.subtitle = element_text(color="slateblue", size=8, face="italic"))
+    plot.subtitle = element_text(color="slateblue", size=8, face="italic")) 
 
 #interactive plot: "Mortality and GDP(%) in 2019, fem"
 ggplotly(ggGDP)
