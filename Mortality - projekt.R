@@ -281,6 +281,7 @@ ggplot(combined_data) +
     plot.title = element_text(color="royalblue4", size=14, face="bold"),
     plot.subtitle = element_text(color="slateblue", size=12, face="italic"))
 
+head(combined_data)
 
 #scatterplott: "Mortality and GDP(%) in 2019, fem"
 ggGDP <- ggplot(data = combined_data) +
@@ -297,6 +298,8 @@ ggGDP <- ggplot(data = combined_data) +
   theme(
     plot.title = element_text(color="royalblue4", size=12, face="bold"),
     plot.subtitle = element_text(color="slateblue", size=8, face="italic")) 
+  
+
 
 #interactive plot: "Mortality and GDP(%) in 2019, fem"
 ggplotly(ggGDP)
@@ -344,12 +347,7 @@ min_risk_pov <- filter(combined_data, risk_poverty == min(risk_poverty))
 max(combined_data$risk_poverty)
 max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty))
 
-#Removing columns from data frame
-#combined_data <- combined_data[, -c(90:92)]
-#combined_data <- combined_data[, - c(101:103)] #
-#combined_data <- combined_data[, -89] #
 
-#Renaming columns in data frame
 
 #creating new df's - the biggest Mortality & and the biggest Current Healthcare Expenditure (% of GDP)
 big_mortality <- combined_data %>%
@@ -395,27 +393,6 @@ ggPHYS <- ggplot(data = combined_data) +
   ) +
   geom_smooth(mapping = aes(x = X2019, y = physicians2018)) 
 
-#ggplot: "Mortality (fem) and Number of Physicians in EU"
-ggPHYS <- ggplot(data = combined_data) +
-  geom_point(mapping = aes(x = X2019, y = physicians2018, 
-                           color = Country.Name, size = GDP_perc)) +
-  theme_light() +
-  labs(
-    title = "Mortality in 2019 (%) in EU and Practising Physicians (per 1 000 population)",
-    subtitle = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%) females, ages between 30 and 70",
-    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS
-    https://www.oecd-ilibrary.org/sites/1d767767-en/index.html?itemId=/content/component/1d767767-en",
-    x = "Mortality, fem (%), 2019",
-    y = "Practising Physicians", 
-    col = "EU Country") +
-  theme(
-    plot.title = element_text(color="royalblue4", size=14, face="bold"),
-    plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
-    plot.caption = element_text(color="deeppink", size=7),
-    axis.title.x = element_text(color="darkmagenta", size=10),
-    axis.title.y = element_text(color="darkmagenta", size=10)
-  ) +
-  geom_smooth(mapping = aes(x = X2019, y = physicians2018)) 
 
 
 #correlation between Mortality and Number of Physicians in EU
