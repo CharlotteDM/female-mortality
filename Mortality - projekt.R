@@ -192,7 +192,7 @@ map_world_mort_fem <- ggplot(combined_data_world) +
     plot.title = element_text(color="royalblue4", size=14, face="bold"),
     plot.subtitle = element_text(color="slateblue", size=12, face="italic"))
 
-
+map_world_mort_fem
 
 #filter data from UE
 EU <- filter (mortality_fem_2000_2019, Country.Code == "POL" | Country.Code == "AUT" |
@@ -212,31 +212,15 @@ EU <- EU[-4, ]
 
 #finds EU country with the highest mortality rate in 2019
 max(EU$X2019, na.rm = TRUE) 
-EUthe_highest_MR2019 <- filter(EU, X2019 == max(X2019, na.rm = TRUE)) #Bulgarria = 16.4
+EUthe_highest_MR2019 <- filter(EU, X2019 == max(X2019, na.rm = TRUE)) #Bulgaria - 24.2
+
 
 #finds EU country with the lowest mortality rate in 2019
 min(EU$X2019, na.rm = TRUE)
 EUthe_lowest_MR2019 <- filter(EU, X2019 == min(X2019, na.rm = TRUE)) #Cyprus - 8.2
 
-#ggplot: "Mortality in UE in 2019, fem" (first attempt)
-ggplot(data = EU) +
-  geom_col(mapping = aes(x = Country.Code, y = X2019, fill = Country.Code, binwidth =  .5)) +
-  coord_flip() +
-  theme_light() +
-  labs(
-    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
-    subtitle = "Females, ages between 30 and 70",
-    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)",
-    x = "UE Country",
-    y = "Mortality, fem (%)",
-    fill = "Country") +
-  theme(
-    plot.title = element_text(color="royalblue4", size=14, face="bold"),
-    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
-    axis.title.y = element_text(color="steelblue2", size=14, face="bold")
-  )
 
-#ggplot: "Mortality in UE in 2019, fem"  (second attempt)
+#ggplot: "Mortality in UE in 2019, fem"  
 gg <- ggplot(data = EU) + geom_col(aes(x = reorder(Country.Name, X2019), y = X2019, fill = X2019)) + 
   scale_fill_gradient(low="blue", high="red") +
   coord_flip() +
