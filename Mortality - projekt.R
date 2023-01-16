@@ -386,11 +386,12 @@ ggPHYS <- ggplot(data = combined_data) +
     plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
     plot.caption = element_text(color="deeppink", size=7),
     axis.title.x = element_text(color="darkmagenta", size=10),
-    axis.title.y = element_text(color="darkmagenta", size=10)
+    axis.title.y = element_text(color="darkmagenta", size=10),
+    legend.position = "none"
   ) +
   geom_smooth(mapping = aes(x = X2019, y = physicians2018)) 
 
-
+ggPHYS
 
 #correlation between Mortality and Number of Physicians in EU
 cor(combined_data$X2019, combined_data$physicians2018)
