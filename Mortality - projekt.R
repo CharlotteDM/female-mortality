@@ -394,10 +394,8 @@ ggPHYS <- ggplot(data = combined_data) +
 ggPHYS
 
 #correlation between Mortality and Number of Physicians in EU
-cor(combined_data$X2019, combined_data$physicians2018)
+cor(combined_data$X2019, combined_data$physicians2018) #-0.17 (weak correlation)
 
-#correlation between Mortality and Current Healthcare Expenditure (% of GDP) in EU
-cor(combined_data$X2019, combined_data$GDP_perc)
 
 #ggplot: "Risk Poverty and Mortality (fem) in UE in 2019"
 ggRP <- ggplot(data = combined_data) +
@@ -416,11 +414,12 @@ ggRP <- ggplot(data = combined_data) +
     plot.subtitle = element_text(color="slateblue", size=8, face="italic"),
     plot.caption = element_text(color="deeppink", size=7),
     axis.title.x = element_text(color="darkmagenta", size=10),
-    axis.title.y = element_text(color="darkmagenta", size=10)
+    axis.title.y = element_text(color="darkmagenta", size=10),
+    legend.position = "none"
   )
 
 #interactive plot: "Risk Poverty & Mortality (fem) in EU in 2019"
 ggplotly(ggRP)
 
 #correlation between Mortality(fem) and Risk Poverty in EU in 2019
-cor(combined_data$X2019, combined_data$risk_poverty)
+cor(combined_data$X2019, combined_data$risk_poverty) #0.48
