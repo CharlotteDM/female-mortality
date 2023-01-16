@@ -23,6 +23,9 @@ library(rstudioapi)
 library(ggdensity)
 library(gganimate)
 library(forecast)
+library(renv)
+
+renv::init()
 
 path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(path)
