@@ -22,6 +22,7 @@ library(RColorBrewer)
 library(rstudioapi)
 library(ggdensity)
 library(gganimate)
+library(ggrepel)
 library(forecast)
 library(renv)
 
@@ -240,7 +241,6 @@ gg <- ggplot(data = EU) + geom_col(aes(x = reorder(Country.Name, X2019), y = X20
 ggplotly(gg)
 
 
-
 #Europe map
 world <- ne_countries(scale = "medium", returnclass = "sf")
 Europe <- world[which(world$continent == "Europe"),]
@@ -296,13 +296,13 @@ ggGDP <- ggplot(data = combined_data) +
     plot.title = element_text(color="royalblue4", size=12, face="bold"),
     plot.subtitle = element_text(color="slateblue", size=8, face="italic")) 
   
-
+ggGDP
 
 #interactive plot: "Mortality and GDP(%) in 2019, fem"
 ggplotly(ggGDP)
 
 
-#how to add subtitle and caption to ggplotly
+#addingsubtitle and caption to ggplotly
 ggplotly(ggGDP) %>%
   layout(title = list(text = paste0("Mortality in 2019 (%) in EU and Current Healthcare Expenditure (% of GDP)",
                                     '<br>',
@@ -317,7 +317,7 @@ ggplotly(ggGDP) %>%
 
 
 #correlation between Mortality(fem) and Current Healthcare Expenditure (% of GDP)
-cor(combined_data$X2019, combined_data$GDP_perc)
+cor(combined_data$X2019, combined_data$GDP_perc) # -0.57
 
 
 #adding data physicians2018
@@ -340,9 +340,9 @@ combined_data <- cbind(combined_data, risk_poverty)
 
 #max and min Risk of Poverty or Social Exclusion in EU in 2019
 min(combined_data$risk_poverty)
-min_risk_pov <- filter(combined_data, risk_poverty == min(risk_poverty))
+min_risk_pov <- filter(combined_data, risk_poverty == min(risk_poverty)) #Czech Republic - 12.5
 max(combined_data$risk_poverty)
-max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty))
+max_risk_pov <- filter(combined_data, risk_poverty == max(risk_poverty)) #Bulgaria - 32.8
 
 
 
