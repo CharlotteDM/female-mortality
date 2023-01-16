@@ -50,23 +50,22 @@ mort2019 <- dplyr::select(mortality_fem, Country.Name, Country.Code, X2019)
 
 #finding country with the highest mortality rate in 2019
 max(mort2019$X2019, na.rm = TRUE) 
-#---max(mort2019$X2019)
-the_highest_MR2019 <- filter(mort2019, X2019 == max(X2019, na.rm = TRUE)) #Kiribati - 43.7
+the_highest_MR2019 <- filter(mort2019, X2019 == max(X2019, na.rm = TRUE)) #Kiribati - 50.8
 
 #finding country with the lowest mortality rate in 2019
 min(mort2019$X2019, na.rm = TRUE)
-the_lowest_MR2019 <- filter(mort2019, X2019 == min(X2019, na.rm = TRUE)) #Korea Płd - 4.4
+the_lowest_MR2019 <- filter(mort2019, X2019 == min(X2019, na.rm = TRUE)) #Korea Płd - 7.3
 
 #mortality in 2000
 mort2000 <- select(mortality_fem, Country.Name, Country.Code, X2000)
 
 #finds country with the highest mortality rate in 2000
 max(mort2000$X2000, na.rm = TRUE)
-the_highest_MR2000 <- filter(mort2000, X2000 == max(X2000, na.rm = TRUE)) #Kiribati - 47.8
+the_highest_MR2000 <- filter(mort2000, X2000 == max(X2000, na.rm = TRUE)) #Kiribati - 56
 
 #finds country with the lowest mortality rate in 2000
 min(mort2000$X2000, na.rm = TRUE)
-the_lowest_MR2000 <- filter(mort2000, X2000 == min(X2000, na.rm = TRUE)) #Japan 7.5
+the_lowest_MR2000 <- filter(mort2000, X2000 == min(X2000, na.rm = TRUE)) #El Salvador - 10.5
 
 
 #selects data from 2000 to 2019
@@ -98,7 +97,7 @@ gg_world <- ggplot(data = mortality_fem_2000_2019) +
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
     legend.position = "none") 
 
-gg_world
+gg_world #due to the large amount of data, the charts are unreadable
 
 cont <- ggplot(data = mortality_fem_2000_2019) +
   geom_point(mapping = aes(x = Country.Name, y = X2019), color = "blue") +
@@ -118,7 +117,7 @@ cont <- ggplot(data = mortality_fem_2000_2019) +
 
 cont
 
-#interactive: "Mortality (fem) in 2019 in whole world"
+#interactive plot: "Mortality (fem) in 2019 in whole world"
 ggplotly(gg_world)
 ggplotly(cont)
 
@@ -158,6 +157,8 @@ box_cont_mort_fem <- ggplot (data = mortality_fem_2000_2019, (aes(Continent_Name
     axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
     axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
     legend.position = "none")
+
+box_cont_mort_fem
 
 #prepares map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
 world <- ne_countries(scale = "medium", returnclass = "sf")
