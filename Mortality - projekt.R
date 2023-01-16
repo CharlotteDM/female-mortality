@@ -160,6 +160,21 @@ box_cont_mort_fem <- ggplot (data = mortality_fem_2000_2019, (aes(Continent_Name
 
 box_cont_mort_fem
 
+#density plot - comparison of mortality across continents
+dens_cont_mort_fem <- ggplot(data=mortality_fem_2000_2019, aes(x=X2019, group=Continent_Name, fill=Continent_Name)) +
+  geom_density(adjust=1.5) +
+  facet_wrap(~Continent_Name) +
+  labs(
+    title = "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)",
+    subtitle = "Females, ages between 30 and 70",
+    caption = "(based on data from: https://data.worldbank.org/indicator/SH.DYN.NCOM.FE.ZS)") +
+  theme(
+    plot.title = element_text(color="royalblue4", size=14, face="bold"),
+    axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+    axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+    legend.position = "none")
+dens_cont_mort_fem
+
 #prepares map "Mortality from CVD, cancer, diabetes, CRD in 2019 (%)"
 world <- ne_countries(scale = "medium", returnclass = "sf")
 combined_data_world <- left_join(mortality_fem_2000_2019, world, by = c("Country.Code" = "brk_a3"))
